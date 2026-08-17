@@ -1,1 +1,8 @@
 .DS_Store
+.vercel
+.env*
+node_modules/
+mobile-shots/
+package.json
+package-lock.json
+screenshot*.mjs

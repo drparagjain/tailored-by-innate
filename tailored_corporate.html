@@ -234,6 +234,51 @@ footer{flex-wrap:wrap;}
 .ft-legal-row a{font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;color:rgba(250,247,242,.3);text-decoration:none;transition:color .2s;}
 .ft-legal-row a:hover{color:var(--rose);}
 @media(max-width:768px){.ft-legal-row{gap:12px;}}
+
+  /* ============ MOBILE NAV (overrides) ============ */
+  html, body { overflow-x: hidden; max-width: 100%; }
+
+  .nav-toggle {
+    display: none; flex-direction: column; gap: 5px; width: 26px;
+    background: none; border: none; cursor: pointer; padding: 8px 4px;
+  }
+  .nav-toggle span { display: block; height: 1.5px; width: 100%; background: var(--ink); transition: transform .25s, opacity .25s; }
+  .nav-toggle.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .nav-toggle.open span:nth-child(2) { opacity: 0; }
+  .nav-toggle.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  .submenu-toggle { display: none; }
+
+  @media (max-width: 768px) {
+    nav{padding:14px 20px;flex-wrap:nowrap;gap:12px;}
+    .nav-toggle { display: flex; }
+    .nav-links{
+      position: fixed; top: 61px; left: 0; right: 0;
+      flex-direction: column; align-items: stretch; gap: 0; width: auto;
+      background: var(--cream); border-bottom: 1px solid var(--line);
+      max-height: 0; overflow: hidden; transition: max-height .3s ease;
+      box-shadow: 0 12px 24px rgba(0,0,0,.08);
+    }
+    .nav-links.open { max-height: 80vh; overflow-y: auto; }
+    .nav-links > li { width: 100%; border-top: 1px solid var(--line-soft); }
+    .nav-links > li > a { display: block; padding: 16px 20px; font-size: 10px; }
+    .nav-links .nav-cta { display: block; margin: 16px 20px; text-align: center; }
+
+    .nav-dropdown { position: relative; }
+    .nav-dropdown > a::after { content: '' !important; }
+    .submenu-toggle {
+      display: block; position: absolute; top: 4px; right: 12px;
+      width: 32px; height: 32px; background: none; border: 1px solid var(--line);
+      color: var(--ink); font-size: 16px; line-height: 1; cursor: pointer;
+    }
+    .dropdown-menu{
+      position: static !important; display: none !important; left: auto !important; top: auto !important;
+      transform: none !important; box-shadow: none; background: rgba(0,0,0,.03) !important;
+      backdrop-filter: none; border: none; min-width: 0; padding: 0;
+    }
+    .nav-dropdown.open .dropdown-menu { display: flex !important; }
+    .dropdown-menu a{ padding: 12px 20px 12px 36px; border-bottom: 1px solid var(--line-soft); }
+  }
 </style>
 </head>
 <body>
@@ -261,11 +306,15 @@ footer{flex-wrap:wrap;}
   <path d="m176.091,66.291l-5.216-7.778-1.745-2.752h-.056v10.53h-1.088v-11.932h1.351l5.216,7.778,1.726,2.752h.056v-10.53h1.088v11.932h-1.332Z"/>
 </svg>
   </a>
-  <ul class="nav-links">
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="navLinks">
     <li><a href="index.html">Home</a></li>
     <li><a href="tailored_services.html">Services</a></li>
     <li class="nav-dropdown">
       <a href="tailored_events.html">Events</a>
+      <button class="submenu-toggle" aria-label="Toggle Events submenu" aria-expanded="false">+</button>
       <div class="dropdown-menu">
         <a href="tailored_events.html">Events &amp; Groups</a>
         <a href="#">Corporate Wellness</a>
@@ -276,6 +325,31 @@ footer{flex-wrap:wrap;}
     <li><a href="index.html#book" class="nav-cta">Book Now</a></li>
   </ul>
 </nav>
+<script>
+(function(){
+  var toggle = document.getElementById('navToggle');
+  var links = document.getElementById('navLinks');
+  var dropdown = document.querySelector('.nav-dropdown');
+  if (!toggle || !links) return;
+  toggle.addEventListener('click', function(){
+    var open = links.classList.toggle('open');
+    toggle.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', open);
+  });
+  if (dropdown) {
+    var subToggle = dropdown.querySelector('.submenu-toggle');
+    if (subToggle) {
+      subToggle.addEventListener('click', function(e){
+        e.preventDefault();
+        var open = dropdown.classList.toggle('open');
+        subToggle.setAttribute('aria-expanded', open);
+        subToggle.textContent = open ? '\u2212' : '+';
+      });
+    }
+  }
+})();
+</script>
+
 
 <!-- HERO -->
 <section class="hero" id="main" tabindex="-1">
